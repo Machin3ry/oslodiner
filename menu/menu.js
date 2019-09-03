@@ -3,6 +3,11 @@ var cta = document.querySelectorAll(".cta");
 var backDrop =document.querySelector(".backdrop");
 var emailForm =document.querySelector(".modal");
 var totalBill;
+
+backDrop.addEventListener("click", ()=>{
+    confirm("You are about to close you transaction")
+    window.location.reload(true);
+})
 //to get the cost of each item when you click the oder button
 for (var i = 0; i < cta.length; i++) {
     cta[i].addEventListener("click", (foo) => {
@@ -26,8 +31,11 @@ function payWithRave() {
     var customer_emaill = document.querySelector('input[type=email]').value;
     // this line grabs the ammount that the user can charged properlly. 
     var amountToPay = totalBill;
-    if (!customer_emaill) {
-        alert("pleas add a valied Email address")
+    //This is a REGEX filter to ensure that the email address is valid E.g contains (@ symbol, .something)
+    var filter = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+
+    if (!customer_emaill || !filter.test(customer_emaill)) {
+        alert("Please add a valid Email address")
     } else {
 
         var x = getpaidSetup({
@@ -43,7 +51,6 @@ function payWithRave() {
             }],
             onclose: function () {
                 window.location.reload(true);
-                alert("You closed you Transaction");
                 // Redirect()
             },
             callback: function (response) {
@@ -53,13 +60,13 @@ function payWithRave() {
                     response.tx.chargeResponseCode == "00" ||
                     response.tx.chargeResponseCode == "0"
                 ) {
-                    redirectHome();
                     alert("Transaction was successful\n Thank You");
+                    redirectHome();
                     //document.write("thank you for shopping with us"); // redirect to a success page
                 } else {
                     
-                    window.location.reload(true);
                     alert("Transaction not successful\n Try Again");
+                    window.location.reload(true);
                     // redirect to a failure page.
                 }
 
@@ -72,5 +79,5 @@ function payWithRave() {
 
 
 function redirectHome() {
-    window.location.assign("index.html");
+    window.location.assign("../index.html");
 }
